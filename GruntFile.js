@@ -41,7 +41,7 @@ module.exports = function(grunt) {
       }
     },
 
-    // TODO: compile the less
+    // Configure the less compilation for both dev and prod
     less: {
       development: {
         files: {
@@ -50,6 +50,7 @@ module.exports = function(grunt) {
       },
       production: {
         options: {
+          // minify css in prod mode
           cleancss: true,
         },
         files: {
@@ -58,7 +59,7 @@ module.exports = function(grunt) {
       }
     },
     
-    // apply autoprefixing to css
+    // configure autoprefixing for compiled output css
     autoprefixer: {
       options: {
         browsers: [
@@ -80,15 +81,21 @@ module.exports = function(grunt) {
       }
     },
 
-    // concat the js: for dev mode
+    // configure concatenation for the js: for dev mode.
+    // this task will only concat files. useful for when in development
+    // and debugging as the file will be readable.
     concat: {
       dist: {
+        // if some scripts depend upon eachother,
+        // make sure to list them here in order
+        // rather than just using the '*' wildcard.
         src: ['dist/js/*.js'],
         dest: 'dist/js/app.js'
       }
     },
 
-    // uglify the js: for prod mode
+    // configure minification for the js: for prod mode.
+    // this task both concatenates and minifies the files.
     uglify: {
       build: {
         options: {
@@ -102,7 +109,7 @@ module.exports = function(grunt) {
       }
     },
 
-    // compile the jade template files
+    // configure the jade template file compilation
     jade: {
       debug: {
         options: {
@@ -148,17 +155,19 @@ module.exports = function(grunt) {
       }
     },
 
-     // grunt-watch will monitor the projects files
+    // configure grunt-watch to monitor the projects files
+    // and perform each specific file type build task.
     watch: {
       dist: {
         options: {
           livereload: true
         },
         files: [
-          // triggering livereload when the .css file is updated
+           // triggering livereload when the .css file is updated
           // (compared to triggering when less completes)
-          // allows livereload to not do a full page refresh
-          // also watch for scripting and markup changes
+          // allows livereload to not do a full page refresh.
+          // also do the same for the compiled .html files and
+          // concatenated .js files.
           'dist/css/*.css',
           'dist/*.html',
           'dist/js/*.js'
