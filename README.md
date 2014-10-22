@@ -7,10 +7,15 @@
 git clone https://github.com/anthdeldev/GruntFile
 ```
 
-#### Run grunt
+#### Install dependencies
 ```
 cd GruntFile
-grunt development
+npm install
+```
+
+#### Run grunt
+```
+grunt
 ```
 
 #### A local server will auto open in your default browser
