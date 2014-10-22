@@ -196,5 +196,5 @@ h1 {
   -webkit-transition: color 0.5s ease-in-out;
        -o-transition: color 0.5s ease-in-out;
           transition: color 0.5s ease-in-out;
-  color: red;
+  color: blue;
 }

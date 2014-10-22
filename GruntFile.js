@@ -111,23 +111,7 @@ module.exports = function(grunt) {
 
     // configure the jade template file compilation
     jade: {
-      debug: {
-        options: {
-          data: {
-            pretty: true,
-            debug: true
-          }
-        },
-        files: [{
-          expand: true,
-          cwd: 'src/views',
-          src: ['**/*.jade'],
-          dest: 'dist',
-          ext: '.html'
-        }]
-      },
-
-      release: {
+      compile: {
         options: {
           data: {
             debug: false
@@ -150,7 +134,8 @@ module.exports = function(grunt) {
         options: {
           port: 3000,
           hostname: "0.0.0.0",
-          bases: ['dist']
+          bases: ['dist'],
+          livereload: true
         }
       }
     },
@@ -158,35 +143,22 @@ module.exports = function(grunt) {
     // configure grunt-watch to monitor the projects files
     // and perform each specific file type build task.
     watch: {
-      dist: {
-        options: {
-          livereload: true
-        },
-        files: [
-           // triggering livereload when the .css file is updated
-          // (compared to triggering when less completes)
-          // allows livereload to not do a full page refresh.
-          // also do the same for the compiled .html files and
-          // concatenated .js files.
-          'dist/css/*.css',
-          'dist/*.html',
-          'dist/js/*.js'
-        ]
-      },
-
       scripts: {
+        options: { livereload: false },
         files: ['src/js/*.js'],
         tasks: ['concat']
       },
 
       stylesless: {
+        options: { livereload: false },
         files: ['src/less/*.less'],
         tasks: ['less:development', 'autoprefixer']
       },
 
       jade: {
+        options: { livereload: false },
         files: ['src/views/*.jade'],
-        tasks: ['jade:debug']
+        tasks: ['jade']
       }
     },
 
@@ -230,13 +202,11 @@ module.exports = function(grunt) {
    * @param  {[type]} mode  [the mode, either dev, or production]
    */
   var registerBuildTask = function(mode) {
-    var jadeMode = (mode === EnvType.dev) ? 'debug' : 'release';
-
     grunt.registerTask('build:' + mode, 
       'Compiles all of the assets and copies them' +
-      ' to the build directory', 
+      ' to th build directory', 
       ['clean:build', 'copy', 'stylesheets:' + mode, 'scripts:' + mode,
-        'jade:' + jadeMode]
+        'jade']
     );
   };
 
