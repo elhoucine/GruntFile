@@ -97,8 +97,7 @@ figure {
 }
 hr {
   -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
-          box-sizing: content-box;
+  box-sizing: content-box;
   height: 0;
 }
 pre {
@@ -150,9 +149,7 @@ input[type="submit"] {
 }
 input[type="checkbox"],
 input[type="radio"] {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   padding: 0;
 }
 input[type="number"]::-webkit-inner-spin-button,
@@ -193,8 +190,6 @@ th {
   padding: 0;
 }
 h1 {
-  -webkit-transition: color 0.5s ease-in-out;
-       -o-transition: color 0.5s ease-in-out;
-          transition: color 0.5s ease-in-out;
-  color: green;
+  transition: color 0.5s ease-in-out;
+  color: blue;
 }

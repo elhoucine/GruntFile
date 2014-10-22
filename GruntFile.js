@@ -7,8 +7,41 @@
  * ################################################### */
 
 module.exports = function(grunt) {
-  // require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
+
+  // some constants for various paths and files to be used by
+  // the task configurations
+  var BUILD_DIR = 'dist/';
+  var BUILD_DIR_JS = BUILD_DIR + 'js/';
+  var BUILD_DIR_CSS = BUILD_DIR + 'css/';
+  var BUILD_FILE_JS = BUILD_DIR_JS + 'app.js';
+
+  var SRC_DIR = 'src/';
+  var SRC_DIR_JS = SRC_DIR + 'js/';
+  var SRC_DIR_LESS = SRC_DIR + 'less/';
+  var SRC_DIR_JADE = SRC_DIR + 'views/'; 
+  var SRC_FILES_JS = SRC_DIR_JS + '*.js';
+  var SRC_FILE_LESS = SRC_DIR_LESS + 'style.less';
+  var SRC_FILES_LESS = SRC_DIR_LESS + '*.less';
+  var SRC_FILES_JADE = SRC_DIR_JADE + '*.jade';
+
+  var AP_BROWSERS = [
+        'Android 2.3',
+        'Android >= 4',
+        'Chrome >= 20',
+        'Firefox >= 24', // Firefox 24 is the latest ESR
+        'Explorer >= 8',
+        'iOS >= 6',
+        'Opera >= 12',
+        'Safari >= 6'
+  ];
+  var JADE_FILE_CFG =  [{
+        expand: true,
+        cwd: SRC_DIR_JADE,
+        src: ['**/*.jade'],
+        dest: BUILD_DIR,
+        ext: '.html'
+  }];
 
   // object to represent the type of environment we are running in.
   // eg. production or development
@@ -24,19 +57,19 @@ module.exports = function(grunt) {
     // wipe the build directory clean
     clean: {
       build: {
-        src: ['dist']
+        src: [BUILD_DIR]
       },
       scripts: {
-        src: ['dist/js/*.js', '!dist/js/app.js']
+        src: [BUILD_DIR_JS + '*.js', '!' + BUILD_FILE_JS]
       }
     },
 
     // copy files into dist directory
     copy: {
       build: {
-        cwd: 'src',
+        cwd: SRC_DIR,
         src: ['**', '!**/less/**', '!**/views/**'],
-        dest: 'dist',
+        dest: BUILD_DIR,
         expand: true
       }
     },
@@ -45,7 +78,7 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "dist/css/style.css": "src/less/style.less"
+          "dist/css/style.css": SRC_FILE_LESS
         }
       },
       production: {
@@ -54,7 +87,7 @@ module.exports = function(grunt) {
           cleancss: true,
         },
         files: {
-          "dist/css/style.css": "src/less/style.less"
+          "dist/css/style.css": SRC_FILE_LESS
         }
       }
     },
@@ -62,22 +95,13 @@ module.exports = function(grunt) {
     // configure autoprefixing for compiled output css
     autoprefixer: {
       options: {
-        browsers: [
-          'Android 2.3',
-          'Android >= 4',
-          'Chrome >= 20',
-          'Firefox >= 24', // Firefox 24 is the latest ESR
-          'Explorer >= 8',
-          'iOS >= 6',
-          'Opera >= 12',
-          'Safari >= 6'
-        ]
+        browsers: AP_BROWSERS
       },
       build: {
         expand: true,
-        cwd: 'dist',
+        cwd: BUILD_DIR,
         src: ['css/*.css'],
-        dest: 'dist'
+        dest: BUILD_DIR
       }
     },
 
@@ -89,8 +113,8 @@ module.exports = function(grunt) {
         // if some scripts depend upon eachother,
         // make sure to list them here in order
         // rather than just using the '*' wildcard.
-        src: ['dist/js/*.js'],
-        dest: 'dist/js/app.js'
+        src: [BUILD_DIR_JS + '*.js'],
+        dest: BUILD_FILE_JS
       }
     },
 
@@ -104,26 +128,30 @@ module.exports = function(grunt) {
           mangle: false
         },
         files: {
-          'dist/js/app.js': ['dist/js/*.js']
+          BUILD_FILE_JS: [BUILD_DIR_JS + '*.js']
         }
       }
     },
 
     // configure the jade template file compilation
     jade: {
-      compile: {
+      debug: {
+        options: {
+          data: {
+            pretty: true,
+            debug: true
+          }
+        },
+        files: JADE_FILE_CFG
+      },
+
+      release: {
         options: {
           data: {
             debug: false
           }
         },
-        files: [{
-          expand: true,
-          cwd: 'src/views',
-          src: ['**/*.jade'],
-          dest: 'dist',
-          ext: '.html'
-        }]
+        files: JADE_FILE_CFG
       }
     },
 
@@ -134,7 +162,7 @@ module.exports = function(grunt) {
         options: {
           port: 3000,
           hostname: "0.0.0.0",
-          bases: ['dist'],
+          bases: [BUILD_DIR],
           livereload: true
         }
       }
@@ -145,19 +173,19 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         options: { livereload: false },
-        files: ['src/js/*.js'],
+        files: [SRC_FILES_JS],
         tasks: ['concat']
       },
 
       stylesless: {
         options: { livereload: false },
-        files: ['src/less/*.less'],
+        files: [SRC_FILES_LESS],
         tasks: ['less:development', 'autoprefixer']
       },
 
       jade: {
         options: { livereload: false },
-        files: ['src/views/*.jade'],
+        files: [SRC_FILES_JADE],
         tasks: ['jade']
       }
     },
@@ -205,7 +233,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build:' + mode, 
       'Compiles all of the assets and copies them' +
       ' to th build directory', 
-      ['clean:build', 'copy', 'stylesheets:' + mode, 'scripts:' + mode,
+      ['clean:build', 'copy', 'stylesheets:' + mode, 'scripts:' + mode, 
         'jade']
     );
   };
@@ -254,4 +282,7 @@ module.exports = function(grunt) {
   registerServerTask(EnvType.prod);
   registerMainTask(EnvType.dev);
   registerMainTask(EnvType.prod);
+
+  // register development mode as the main task
+  grunt.registerTask('default', 'Default task: development', 'development');
 };

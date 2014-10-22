@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "My front end build setup",
   "dependencies": {
+    "express": "~3.4.8",
     "grunt": "0.x.x",
     "load-grunt-tasks": "0.6.0",
     "grunt-autoprefixer": "1.0.1",
