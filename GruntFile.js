@@ -1,7 +1,8 @@
 /* ###################################################
  * Title: GruntFile.js
  * Desc: The grunt build configuration file.
- * Author: Anthony Del Ciotto
+ * Author: Elhoucine Az
+ * Original Author: Anthony Del Ciotto
  * Date: 20th October 2014
  * License: MIT
  * ################################################### */
