@@ -4,7 +4,7 @@
 
 #### clone the repo:
 ```
-git clone https://github.com/anthdeldev/GruntFile
+git clone https://github.com/elhoucine/GruntFile
 ```
 
 #### Install dependencies
