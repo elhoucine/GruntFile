@@ -20,3 +20,5 @@ grunt
 
 #### A local server will auto open in your default browser
 
+## TODO
+- [ ] Update to latest versions.
